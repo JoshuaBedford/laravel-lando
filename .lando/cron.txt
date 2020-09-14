@@ -1,0 +1,1 @@
+* * * * * /usr/local/bin/php -d memory_limit=-1 /app/artisan schedule:run
