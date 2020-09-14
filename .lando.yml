@@ -1,0 +1,51 @@
+# Lando is configured based on ‘recipes’ as config files. Paste the content below into a file named .lando.yml.
+# This recipe installs a LAMP stack, composer, artisan(sorta), and Node/npm. 
+# It also configures the appserver (PHP) with cron / supervisor to work with laravel.
+
+# Check out my Lando ZSH plugin for greater efficiency:
+# URL: https://github.com/JoshuaBedford/lando-zsh
+
+name: educators
+recipe: laravel
+config:
+  webroot: public
+  cache: redis
+services:
+  appserver:
+    type: php
+    config:
+      php: .lando/php.ini
+    build_as_root:
+      # - docker-php-ext-install pcntl
+      # - pecl channel-update pecl.php.net
+      # - pecl install mongodb
+      # - docker-php-ext-enable mongodb
+      - apt-get update -y
+      - apt-get install cron -y
+      - apt-get install supervisor -y
+      - cp -f /app/.lando/docker-php-entrypoint.sh /usr/local/bin/docker-php-entrypoint
+      - cp -f /app/.lando/laravel-worker.conf /etc/supervisor/conf.d/laravel-worker.conf
+    run_as_root:
+      - service cron start
+      - service supervisor start
+      - supervisorctl start laravel-worker:*
+    run:
+      - "cd $LANDO_MOUNT && composer install"
+      - crontab /app/.lando/cron.txt
+  node:
+    # Node version 6.10
+    type: node
+
+    # Note that most deps should be installed by the normal npm install, this is
+    # for things like gulp/grunt cli that are global dependencies
+    globals:
+      gulp-cli: "latest"
+      bower: "latest"
+      webpack: "latest"
+      npm: "latest"
+
+#this is necessary to port commands in.
+tooling:
+  # This makes available 'lando npm' to run the 'npm' command.
+  npm:
+    service: node
