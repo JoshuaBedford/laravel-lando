@@ -6,6 +6,7 @@ Looking at how to configure Lando (a local dev environment built on docker) to s
 #### Usage: 
 - Copy the folder `.lando/*` into laravel project.
 - Copy the file `.lando.yml` into laravel project.
+- Check `.lando/laravel-worker.conf` to ensure proper queue is called (included script utilizes sqs).
 - Run `lando start`.
 - Done!
 
@@ -14,7 +15,7 @@ Looking at how to configure Lando (a local dev environment built on docker) to s
 - docker-php-entrypoint.sh - ensures cron starts.
 - laravel-worker.conf - typical supervisor setup with paths/user adapted for lando.
 - php.ini - Overcame the issue with memory limits from default Lando config for php.ini
-- **Note:** If any of the above is changed, rebuild with `lando rebuild -y`
+- **Note:** If any of the support files (including lando config) is changed, rebuild with `lando rebuild -y`
 
 ##### A few phrases I tried to search when figuring this out:
 - Lando Laravel Supervisor
