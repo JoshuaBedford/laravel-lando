@@ -5,7 +5,7 @@
 # Check out my Lando ZSH plugin for greater efficiency:
 # URL: https://github.com/JoshuaBedford/lando-zsh
 
-name: educators
+name: {{ PROJECT_NAME_HERE }}
 recipe: laravel
 config:
   webroot: public
